@@ -25,6 +25,16 @@ const axios = require('axios');
 const dotenv = require('dotenv');
 dotenv.config();
 
+// Check for required environment variables
+const requiredEnvVars = ['OP_URL', 'MM_URL', 'INT_URL', 'MATTERMOST_SLASH_TOKEN', 'MATTERMOST_BOT_TOKEN', 'OP_ACCESS_TOKEN'];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+  console.error('Missing required environment variables:', missingEnvVars.join(', '));
+  console.error('Please run "sh configure.sh" or set them manually in .env file');
+  process.exit(1);
+}
+
 const app = express();
 
 app.use(bodyParser.json());

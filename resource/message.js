@@ -21,7 +21,10 @@ class Message {
 
     constructor(mmURL) {
         this.config = {
-            headers: { 'Authorization': 'Bearer ' + process.env.MATTERMOST_BOT_TOKEN }
+            headers: { 
+                'Authorization': 'Bearer ' + process.env.MATTERMOST_BOT_TOKEN,
+                'Content-Type': 'application/json'
+            }
         };
         this.mmURL = mmURL;
     }

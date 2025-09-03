@@ -31,9 +31,12 @@ module.exports = (app, axios) => {
   const RateLimit = require('express-rate-limit');
   const limiter = RateLimit({
     windowMs: 1*60*1000,
-    max: 100,
-    standardHeaders: true,
-    legacyHeaders: false
+    limit: 100,
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+    message: {
+      error: 'Too many requests, please try again later.'
+    }
   });
 
   app.use(limiter);
@@ -44,6 +47,12 @@ module.exports = (app, axios) => {
 
   app.post('/', (req, res) => {
     const {command, token, text} = req.body;
+    
+    // Input validation
+    if (!token || !command) {
+      return res.status(400).send("Missing required parameters");
+    }
+    
     if(token === process.env.MATTERMOST_SLASH_TOKEN) {
       console.log("Request Body to / ", JSON.stringify(req.body, null, 2));
       if(command === "/op") {
@@ -156,7 +165,7 @@ module.exports = (app, axios) => {
   app.post('/saveWP', (req, res) => {
     console.log("Work package save request: ", JSON.stringify(req.body, null, 2));
     uiActions.saveWP(req, res, axios);
-  })
+  });
 
   app.post('/delWP', (req, res) => {
     console.log("Work package delete request: ", JSON.stringify(req.body, null, 2));
